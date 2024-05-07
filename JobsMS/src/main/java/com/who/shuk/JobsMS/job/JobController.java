@@ -3,14 +3,13 @@ package com.who.shuk.JobsMS.job;
 
 /*import com.who.shuk.JobApplication.model.Job;
 import com.who.shuk.JobApplication.service.JobService;*/
-import com.who.shuk.JobsMS.job.dto.JobCompanyDTO;
+import com.who.shuk.JobsMS.job.dto.JobDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class JobController {
@@ -25,13 +24,13 @@ public class JobController {
     */
 
     @GetMapping("/jobs")
-    public ResponseEntity<List<JobCompanyDTO>> findAll(){
-        List<JobCompanyDTO> allJobs = jobService.findAll();
+    public ResponseEntity<List<JobDTO>> findAll(){
+        List<JobDTO> allJobs = jobService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(allJobs);
     }
     @GetMapping("/jobs/{ID}")
-    public ResponseEntity<JobCompanyDTO> findById(@PathVariable("ID") long id){
-        JobCompanyDTO jobById = jobService.getJobById(id);
+    public ResponseEntity<JobDTO> findById(@PathVariable("ID") long id){
+        JobDTO jobById = jobService.getJobById(id);
         if(jobById!=null)
             return new ResponseEntity<>(jobById, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

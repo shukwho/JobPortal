@@ -1,14 +1,14 @@
 package com.who.shuk.JobsMS.job;
 
-import com.who.shuk.JobsMS.job.dto.JobCompanyDTO;
+import com.who.shuk.JobsMS.job.dto.JobDTO;
 
 import java.util.List;
 
 public interface JobService {
-    List<JobCompanyDTO> findAll();
+    List<JobDTO> findAll();
     void createJob(Job job);
 
-    JobCompanyDTO getJobById(long id);
+    JobDTO getJobById(long id);
 
     boolean delete(long id);
 

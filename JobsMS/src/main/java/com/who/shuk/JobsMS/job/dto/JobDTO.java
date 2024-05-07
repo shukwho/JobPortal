@@ -1,9 +1,11 @@
 package com.who.shuk.JobsMS.job.dto;
 
-import com.who.shuk.JobsMS.job.Job;
 import com.who.shuk.JobsMS.job.external.Company;
+import com.who.shuk.JobsMS.job.external.Review;
 
-public class JobCompanyDTO {
+import java.util.List;
+
+public class JobDTO {
     //private Job job;
     private Long id;
     private String title;
@@ -14,7 +16,11 @@ public class JobCompanyDTO {
 
     private Company company;
 
-    /*public Job getJob() {
+
+    private List<Review> review;
+
+    /* Changes for creating Mapper class
+    public Job getJob() {
         return job;
     }
 
@@ -77,4 +83,14 @@ public class JobCompanyDTO {
     public void setCompany(Company company) {
         this.company = company;
     }
+    public List<Review> getReview() {
+        return review;
+    }
+
+    public void setReview(List<Review> review) {
+        this.review = review;
+    }
+
+
+
 }
