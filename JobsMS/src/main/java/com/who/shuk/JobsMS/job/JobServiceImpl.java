@@ -2,6 +2,7 @@ package com.who.shuk.JobsMS.job;
 
 import com.who.shuk.JobsMS.job.dto.JobCompanyDTO;
 import com.who.shuk.JobsMS.job.external.Company;
+import com.who.shuk.JobsMS.job.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +17,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private JobRepository jobRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
     private List<Job> jobsList = new ArrayList<>();
 
     @Override
@@ -30,24 +34,17 @@ public class JobServiceImpl implements JobService {
         List<JobCompanyDTO> jobCompanyList = jobsList.stream().map(this::convertToDTO).collect(Collectors.toList());
         return jobCompanyList;
     }
-    private JobCompanyDTO convertToDTO(Job job){
-        RestTemplate restTemplate = new RestTemplate();
-        Company company = restTemplate.getForObject("http://localhost:8081/companies/"+job.getCompanyId(),
-                Company.class);
-        JobCompanyDTO jobCompanyDTO = new JobCompanyDTO();
-        jobCompanyDTO.setJob(job);
-        jobCompanyDTO.setCompany(company);
-        return jobCompanyDTO;
-    }
-
+   
     @Override
     public void createJob(Job job) {
         jobRepository.save(job);
     }
 
     @Override
-    public Optional<Job> findByID(long id) {
-        return jobRepository.findById(id);
+    public JobCompanyDTO getJobById(long id) {
+        Job job =jobRepository.findById(id).orElse(null);
+        JobCompanyDTO jobCompanyDTO = convertToDTO(job);
+        return jobCompanyDTO;
     }
 
     @Override
@@ -74,4 +71,17 @@ public class JobServiceImpl implements JobService {
         }
         return job1.get();
     }
+    private JobCompanyDTO convertToDTO(Job job){
+        //RestTemplate restTemplate = new RestTemplate();
+        Company company = restTemplate.getForObject("http://CompanyMS:8081/companies/"+job.getCompanyId(),
+                Company.class);
+        JobCompanyDTO jobCompanyDTO = JobMapper.mapToJobCompanyDTO(job, company);
+        /*
+        Ceated JobMapper class to Map to DTO class
+        JobCompanyDTO jobCompanyDTO = new JobCompanyDTO();
+        jobCompanyDTO.setJob(job);
+        jobCompanyDTO.setCompany(company);*/
+        return jobCompanyDTO;
+    }
+
 }

@@ -30,14 +30,11 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.OK).body(allJobs);
     }
     @GetMapping("/jobs/{ID}")
-    public ResponseEntity findById(@PathVariable("ID") long id){
-        Optional<Job> job = jobService.findByID(id);
-        if(job.isPresent()){
-            return ResponseEntity.status(HttpStatus.OK).body(job);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<JobCompanyDTO> findById(@PathVariable("ID") long id){
+        JobCompanyDTO jobById = jobService.getJobById(id);
+        if(jobById!=null)
+            return new ResponseEntity<>(jobById, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     @PostMapping("/jobs")
     public ResponseEntity<Job> createJob(@RequestBody Job job){
