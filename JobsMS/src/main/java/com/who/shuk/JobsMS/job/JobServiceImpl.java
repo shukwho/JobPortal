@@ -1,5 +1,7 @@
 package com.who.shuk.JobsMS.job;
 
+import com.who.shuk.JobsMS.job.clients.CompanyClient;
+import com.who.shuk.JobsMS.job.clients.ReviewClient;
 import com.who.shuk.JobsMS.job.dto.JobDTO;
 import com.who.shuk.JobsMS.job.external.Company;
 import com.who.shuk.JobsMS.job.external.Review;
@@ -24,6 +26,11 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private CompanyClient companyClient;
+    @Autowired
+    private ReviewClient reviewClient;
     private List<Job> jobsList = new ArrayList<>();
 
     @Override
@@ -77,12 +84,19 @@ public class JobServiceImpl implements JobService {
     }
     private JobDTO convertToDTO(Job job){
         //RestTemplate restTemplate = new RestTemplate();
+
+        Company company = companyClient.getCompany(job.getCompanyId());
+        List<Review> reviews = reviewClient.getReviews(job.getCompanyId());
+
+        /*Above changes to use openfeign
         Company company = restTemplate.getForObject("http://CompanyMS:8081/companies/"+job.getCompanyId(),
                 Company.class);
         ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange("http://ReviewMS:8083/reviews?companyId=" + job.getCompanyId(),
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<Review>>() {
                 });
-        List<Review> reviews = reviewResponse.getBody();
+                List<Review> reviews = reviewResponse.getBody();*/
+
+
         JobDTO jobDTO = JobMapper.mapToJobDTO(job, company,reviews);
         /*
         Ceated JobMapper class to Map to DTO class
