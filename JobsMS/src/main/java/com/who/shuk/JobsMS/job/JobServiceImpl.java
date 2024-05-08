@@ -6,10 +6,10 @@ import com.who.shuk.JobsMS.job.dto.JobDTO;
 import com.who.shuk.JobsMS.job.external.Company;
 import com.who.shuk.JobsMS.job.external.Review;
 import com.who.shuk.JobsMS.job.mapper.JobMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,6 +34,9 @@ public class JobServiceImpl implements JobService {
     private List<Job> jobsList = new ArrayList<>();
 
     @Override
+    //@CircuitBreaker(name="companyBreaker",fallbackMethod = "companyBreakerFallback")
+    //@Retry(name="companyBreaker",fallbackMethod = "companyBreakerFallback")
+    @RateLimiter(name="companyBreaker",fallbackMethod = "companyBreakerFallback")
     public List<JobDTO> findAll() {
         /*List<JobCompanyDTO> jobCompanyList = new ArrayList<>();
         List<Job> jobList = jobRepository.findAll();
@@ -104,6 +107,11 @@ public class JobServiceImpl implements JobService {
         jobCompanyDTO.setJob(job);
         jobCompanyDTO.setCompany(company);*/
         return jobDTO;
+    }
+    public List<String> companyBreakerFallback(Exception e){
+        List<String> list = new ArrayList<>();
+        list.add("Dummy");
+        return list;
     }
 
 }
